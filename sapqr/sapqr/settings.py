@@ -109,3 +109,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #JET_INDEX_DASHBOARD = 'parqueadero.dashboard.CustomIndexDashboard'
 #JET_APP_INDEX_DASHBOARD = 'parqueadero.dashboard.CustomAppIndexDashboard'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

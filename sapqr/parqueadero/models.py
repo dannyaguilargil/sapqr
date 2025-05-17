@@ -1,5 +1,8 @@
 from django.db import models
 import uuid
+import qrcode
+from io import BytesIO
+from django.core.files import File
 
 class QR(models.Model):
     id = models.AutoField(primary_key=True)
@@ -7,9 +10,21 @@ class QR(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     fecha_actualizacion = models.DateTimeField(auto_now=True)
     activo = models.BooleanField(default=True)
+    imagen_qr = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
 
-    def __str__(self):
-        return str(self.uuid)
+    def generar_qr(self):
+        qr_img = qrcode.make(str(self.uuid))
+        buffer = BytesIO()
+        qr_img.save(buffer, format='PNG')
+        filename = f'qr_{self.uuid}.png'
+        self.imagen_qr.save(filename, File(buffer), save=False)
+        buffer.close()
+
+    def save(self, *args, **kwargs):
+        # Genera el QR solo si no existe ya
+        if not self.imagen_qr:
+            self.generar_qr()
+        super().save(*args, **kwargs)
     
 
 class colaborador(models.Model):
