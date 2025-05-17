@@ -23,6 +23,7 @@ urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),  # Panel JET
     path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Dashboard opcional
     path('admin/', admin.site.urls),
+    path('', include('parqueadero.urls')),
 ]
 # Solo en desarrollo: servir archivos media
 if settings.DEBUG:

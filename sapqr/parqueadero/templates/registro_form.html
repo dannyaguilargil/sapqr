@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro QR</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .registro-container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #357edd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2c6dc6;
+        }
+
+        .errorlist {
+            color: red;
+            font-size: 13px;
+            margin-top: -15px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="registro-container">
+    <h2>Registro rápido - Parqueadero E.S.E IMSALUD</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <label for="{{ form.placa.id_for_label }}">{{ form.placa.label }}</label>
+        {{ form.placa }}
+        {% if form.placa.errors %}
+            <div class="errorlist">
+                {{ form.placa.errors }}
+            </div>
+        {% endif %}
+        <button type="submit">Continuar</button>
+    </form>
+</div>
+
+</body>
+</html>

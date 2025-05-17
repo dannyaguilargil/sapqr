@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ tipo|title }} registrada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .registro-container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 30px 35px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #444;
+            margin: 10px 0;
+        }
+
+        .dato {
+            font-weight: bold;
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .registro-container {
+                margin: 30px 15px;
+                padding: 25px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="registro-container">
+    <h2>{{ tipo|title }} registrada</h2>
+    <p><span class="dato">Placa:</span> {{ registro.placa }}</p>
+    <p><span class="dato">Fecha y hora:</span> {{ registro.fecha_registro|date:"d/m/Y H:i" }}</p>
+</div>
+
+</body>
+</html>

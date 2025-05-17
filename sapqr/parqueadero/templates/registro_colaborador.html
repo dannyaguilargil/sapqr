@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo colaborador</title>
+    <!-- Esto es CLAVE para que sea responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .registro-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: #333;
+            text-align: center;
+        }
+
+        p {
+            font-size: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        .errorlist {
+            color: red;
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .registro-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            button {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="registro-container">
+    <h2>Registro de nuevo colaborador</h2>
+    <p>Tu placa no está registrada. Completa los siguientes datos:</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="errorlist">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit">Registrar</button>
+    </form>
+</div>
+
+</body>
+</html>
