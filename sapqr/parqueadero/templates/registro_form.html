@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Esto es clave para móviles -->
     <title>Registro QR</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: "Segoe UI", sans-serif;
             background: #f4f6f8;
@@ -63,6 +68,22 @@
             font-size: 13px;
             margin-top: -15px;
             margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .registro-container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
         }
     </style>
 </head>

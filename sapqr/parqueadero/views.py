@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import colaborador, RegistroVehiculo, MovimientoVehiculo, QR
 from .forms import  ColaboradorForm, PlacaForm, RegistroForm
+from django.contrib import messages
 
 def registro_general(request):
     if request.method == 'POST':
@@ -47,47 +48,52 @@ def registro_general(request):
 
 
 def registro_qr(request, uuid):
-    # Buscar el QR por UUID
     qr = get_object_or_404(QR, uuid=uuid)
-    
-    # Comprobar si la placa ya está registrada
-    placa = request.GET.get('placa')  # Suponemos que la placa viene como parámetro en el escaneo del QR
 
-    # Buscar el registro de vehículo asociado con la placa
-    registro = RegistroVehiculo.objects.filter(qr=qr, placa=placa).first()
+    if request.method == 'POST':
+        # PASO 1: Revisar si solo se recibió la placa
+        if 'placa' in request.POST and 'nombre_completo' not in request.POST:
+            placa = request.POST['placa'].strip().upper()
+            colaborador_obj = colaborador.objects.filter(placa=placa).first()
 
-    if not registro:
-        # Si el vehículo no está registrado, mostramos un formulario de registro
-        if request.method == 'POST':
-            form = RegistroForm(request.POST)
-            if form.is_valid():
-                # Guardamos el nuevo registro
-                nuevo = form.save(commit=False)
-                nuevo.qr = qr
-                nuevo.save()
+            if colaborador_obj:
+                # Ya existe → registrar movimiento
+                registro, _ = RegistroVehiculo.objects.get_or_create(qr=qr, placa=placa)
+                ultimo = MovimientoVehiculo.objects.filter(registro=registro).order_by('-timestamp').first()
+                tipo = 'entrada' if not ultimo or ultimo.tipo == 'salida' else 'salida'
+                MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
 
-                # Crear el movimiento de entrada
-                MovimientoVehiculo.objects.create(registro=nuevo, tipo='entrada')
-
-                return render(request, 'registro/completado.html', {
-                    'registro': nuevo,
-                    'tipo': 'entrada'
+                return render(request, 'movimiento_registrado.html', {
+                    'registro': registro,
+                    'colaborador': colaborador_obj,
+                    'tipo': tipo
                 })
-        else:
-            form = RegistroForm()
 
-        return render(request, 'registro/formulario.html', {'form': form, 'qr': qr})
-    
-    # Si ya está registrado, buscamos el último movimiento
-    ultimo_movimiento = MovimientoVehiculo.objects.filter(registro=registro).order_by('-timestamp').first()
-    
-    # Determinamos si es entrada o salida
-    tipo = 'entrada' if not ultimo_movimiento or ultimo_movimiento.tipo == 'salida' else 'salida'
+            else:
+                # No existe → mostrar formulario completo con placa ya ingresada
+                form = ColaboradorForm(initial={'placa': placa})
+                return render(request, 'registro_colaborador.html', {
+                    'form': form,
+                    'qr': qr
+                })
 
-    # Registrar el movimiento
-    MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
+        # PASO 2: Si llegó el formulario completo
+        form = ColaboradorForm(request.POST)
+        if form.is_valid():
+            nuevo_colab = form.save(commit=False)
+            nuevo_colab.qr = qr
+            nuevo_colab.save()
 
-    return render(request, 'registro/movimiento_registrado.html', {
-        'registro': registro,
-        'tipo': tipo
-    })
+            registro = RegistroVehiculo.objects.create(qr=qr, placa=nuevo_colab.placa)
+            MovimientoVehiculo.objects.create(registro=registro, tipo='entrada')
+
+            return render(request, 'completado.html', {
+                'registro': registro,
+                'tipo': 'entrada',
+                'mensaje': 'Registro completado con éxito'
+            })
+    else:
+        # Mostrar solo el formulario de la placa
+        form = PlacaForm()
+
+    return render(request, 'registro_form.html', {'form': form, 'qr': qr})
