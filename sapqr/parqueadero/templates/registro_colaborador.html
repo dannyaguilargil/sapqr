@@ -110,7 +110,7 @@
         {% csrf_token %}
         {% for field in form %}
             <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
+            {{ field }} 
             {% if field.errors %}
                 <div class="errorlist">
                     {{ field.errors }}
