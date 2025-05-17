@@ -13,6 +13,10 @@ class ColaboradorForm(forms.ModelForm):
             'modelo': forms.TextInput(attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = True  # hace todos los campos obligatorios
 
 
 class PlacaForm(forms.Form):

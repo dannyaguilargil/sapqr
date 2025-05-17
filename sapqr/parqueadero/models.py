@@ -4,6 +4,7 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 
+
 class QR(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
