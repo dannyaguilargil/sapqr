@@ -62,7 +62,7 @@
     <h2>{{ tipo|title }} registrada</h2>
 
     <p><span class="dato">Placa:</span> {{ registro.placa }}</p>
-    <p><span class="dato">Fecha y hora del registro:</span> {{ registro.fecha_registro|date:"d/m/Y H:i" }}</p>
+    <p><span class="dato">Fecha y hora del registro:</span> {{ movimiento.timestamp|date:"d/m/Y H:i" }}</p>
 </div>
 
 </body>
