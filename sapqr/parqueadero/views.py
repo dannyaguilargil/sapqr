@@ -15,8 +15,13 @@ def registro_general(request):
                 registro, _ = RegistroVehiculo.objects.get_or_create(qr=colaborador_obj.qr, placa=placa)
                 ultimo = MovimientoVehiculo.objects.filter(registro=registro).order_by('-timestamp').first()
                 tipo = 'entrada' if not ultimo or ultimo.tipo == 'salida' else 'salida'
-                MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
-                return render(request, 'movimiento_registrado.html', {'registro': registro, 'tipo': tipo})
+                movimiento = MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
+
+                return render(request, 'movimiento_registrado.html', {
+                    'registro': registro,
+                    'tipo': tipo,
+                    'movimiento': movimiento
+                })
             else:
                 # No existe, mostrar formulario completo
                 form = ColaboradorForm(initial={'placa': placa})
@@ -28,23 +33,25 @@ def registro_general(request):
             nuevo_colab = form.save(commit=False)
             
             # Usamos un QR general, lo puedes crear manualmente o buscar uno existente
-            qr_general, _ = QR.objects.get_or_create(uuid="11111111-1111-1111-1111-111111111111")  # ejemplo UUID fijo
+            qr_general, _ = QR.objects.get_or_create(uuid="11111111-1111-1111-1111-111111111111")
             nuevo_colab.qr = qr_general
             nuevo_colab.save()
 
             # Crear registro de vehículo
             registro = RegistroVehiculo.objects.create(qr=qr_general, placa=nuevo_colab.placa)
-            MovimientoVehiculo.objects.create(registro=registro, tipo='entrada')
+            movimiento = MovimientoVehiculo.objects.create(registro=registro, tipo='entrada')
 
             return render(request, 'completado.html', {
                 'registro': registro,
                 'tipo': 'entrada',
-                'mensaje': 'Registro completado con éxito'
+                'mensaje': 'Registro completado con éxito',
+                'movimiento': movimiento
             })
     else:
         form = PlacaForm()
 
     return render(request, 'registro_form.html', {'form': form})
+
 
 
 def registro_qr(request, uuid):
@@ -61,12 +68,13 @@ def registro_qr(request, uuid):
                 registro, _ = RegistroVehiculo.objects.get_or_create(qr=qr, placa=placa)
                 ultimo = MovimientoVehiculo.objects.filter(registro=registro).order_by('-timestamp').first()
                 tipo = 'entrada' if not ultimo or ultimo.tipo == 'salida' else 'salida'
-                MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
+                movimiento = MovimientoVehiculo.objects.create(registro=registro, tipo=tipo)
 
                 return render(request, 'movimiento_registrado.html', {
                     'registro': registro,
                     'colaborador': colaborador_obj,
-                    'tipo': tipo
+                    'tipo': tipo,
+                    'movimiento': movimiento
                 })
 
             else:
@@ -85,15 +93,15 @@ def registro_qr(request, uuid):
             nuevo_colab.save()
 
             registro = RegistroVehiculo.objects.create(qr=qr, placa=nuevo_colab.placa)
-            MovimientoVehiculo.objects.create(registro=registro, tipo='entrada')
+            movimiento = MovimientoVehiculo.objects.create(registro=registro, tipo='entrada')
 
             return render(request, 'completado.html', {
                 'registro': registro,
+                'movimiento': movimiento,
                 'tipo': 'entrada',
                 'mensaje': 'Registro completado con éxito'
             })
     else:
-        # Mostrar solo el formulario de la placa
         form = PlacaForm()
 
     return render(request, 'registro_form.html', {'form': form, 'qr': qr})
