@@ -61,7 +61,10 @@
 <div class="registro-container">
     <h2>{{ tipo|title }} registrada</h2>
     <p><span class="dato">Placa:</span> {{ registro.placa }}</p>
-    <p><span class="dato">Fecha y hora:</span> {{ registro.fecha_registro|date:"d/m/Y H:i" }}</p>
+    <p><span class="dato">Fecha y hora:</span> {{ movimiento.timestamp|date:"d/m/Y H:i" }}</p>
+    {% if mensaje %}
+    <p style="margin-top: 20px; color: green;"><strong>{{ mensaje }}</strong></p>
+    {% endif %}
 </div>
 
 </body>
