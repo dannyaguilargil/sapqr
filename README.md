@@ -24,8 +24,8 @@ Este proyecto es un sistema de control de acceso para vehículos mediante escane
 
 1. **Clona el repositorio**:
     ```bash
-    git clone https://github.com/tuusuario/proyecto-registro-qr.git
-    cd proyecto-registro-qr
+
+    cd sapqr
     ```
 
 2. **Crea y activa un entorno virtual**:
